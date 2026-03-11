@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark navy gradient colors from Figma -->
+    <color name="bg_dark_start">#0F1744</color>
+    <color name="bg_dark_mid">#1D293D</color>
+    <color name="bg_surface">#1A2348</color>
+    <color name="bg_card">#1E2A50</color>
+    <color name="bg_card_elevated">#243060</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8899BB</color>
+    <color name="text_hint">#5566AA</color>
+
+    <!-- Accent -->
+    <color name="accent_blue">#4A90FF</color>
+    <color name="accent_blue_light">#6AAAFF</color>
+    <color name="accent_green">#48BB78</color>
+    <color name="accent_red">#FC8181</color>
+    <color name="accent_yellow">#F6C90E</color>
+    <color name="accent_purple">#9F7AEA</color>
+
+    <!-- Status dots -->
+    <color name="dot_green">#48BB78</color>
+    <color name="dot_red">#FC8181</color>
+    <color name="dot_yellow">#F6C90E</color>
+
+    <!-- Bottom nav -->
+    <color name="bottom_nav_bg">#0A1230</color>
+    <color name="bottom_nav_active">#4A90FF</color>
+    <color name="bottom_nav_inactive">#445577</color>
+
+    <!-- Input -->
+    <color name="input_bg">#1A2545</color>
+    <color name="divider">#253060</color>
+</resources>
