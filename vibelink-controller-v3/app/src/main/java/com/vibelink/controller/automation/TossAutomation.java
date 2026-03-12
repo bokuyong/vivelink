@@ -176,14 +176,30 @@ public class TossAutomation {
         }
     }
 
-    // Launch Toss from home: Gemini finds icon and tap, fallback to monkey
+    // Launch Toss from home: UIAutomator -> Gemini -> monkey; always show tap overlay
+    private static final int TOSS_ICON_FALLBACK_X = 540;
+    private static final int TOSS_ICON_FALLBACK_Y = 1400;
+
     private boolean launchTossFromHome() {
+        // 1. Try UIAutomator - launcher often shows "토스" as app label
+        try {
+            Point pt = adb.findElementByText("토스").get(5, TimeUnit.SECONDS);
+            if (pt != null) {
+                Log.i(TAG, "UIAutomator found Toss icon at (" + pt.x + "," + pt.y + ")");
+                notifyTap(pt.x, pt.y);
+                adb.tap(pt.x, pt.y).get(5, TimeUnit.SECONDS);
+                return true;
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "UIAutomator Toss icon: " + e.getMessage());
+        }
+        // 2. Try Gemini vision
         try {
             Bitmap frame = adb.captureScreen().get(10, TimeUnit.SECONDS);
             if (frame != null) {
                 Point pt = gemini.findTossAppOnHome(frame).get(15, TimeUnit.SECONDS);
                 if (pt != null) {
-                    Log.i(TAG, "Gemini tapped Toss icon at (" + pt.x + "," + pt.y + ")");
+                    Log.i(TAG, "Gemini found Toss icon at (" + pt.x + "," + pt.y + ")");
                     notifyTap(pt.x, pt.y);
                     adb.tap(pt.x, pt.y).get(5, TimeUnit.SECONDS);
                     return true;
@@ -192,7 +208,9 @@ public class TossAutomation {
         } catch (Exception e) {
             Log.w(TAG, "Gemini tap Toss failed: " + e.getMessage());
         }
+        // 3. Fallback to monkey - show overlay at typical icon position for feedback
         Log.i(TAG, "Fallback to monkey launch");
+        notifyTap(TOSS_ICON_FALLBACK_X, TOSS_ICON_FALLBACK_Y);
         try {
             adb.launchToss().get(5, TimeUnit.SECONDS);
             return true;
