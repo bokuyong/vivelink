@@ -1,0 +1,23 @@
+<resources>
+    <style name="Theme.Clodock" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/accent_blue</item>
+        <item name="colorPrimaryVariant">@color/accent_blue_light</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">@color/accent_green</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:windowBackground">@color/bg_dark_start</item>
+        <item name="android:statusBarColor">@color/bg_surface</item>
+        <item name="android:navigationBarColor">@color/bottom_nav_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="bottomNavigationStyle">@style/BottomNavLight</item>
+    </style>
+
+    <style name="BottomNavLight" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/bottom_nav_bg</item>
+        <item name="itemIconTint">@drawable/bottom_nav_selector</item>
+        <item name="itemTextColor">@drawable/bottom_nav_selector</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+</resources>
