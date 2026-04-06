@@ -1,0 +1,48 @@
+# ============ Android Build Outputs ============
+*.apk
+*.aab
+*.dex
+*.class
+bin/
+gen/
+
+# ============ Gradle ============
+.gradle/
+build/
+*/build/
+**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# ============ Local Config (machine-specific) ============
+local.properties
+*.local.properties
+
+# ============ IDE ============
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+
+# ============ Keystore / Secrets ============
+*.jks
+*.keystore
+google-services.json
+*.pem
+
+# ============ Logs ============
+*.log
+*.hprof
+
+# ============ NDK / C++ ============
+.externalNativeBuild/
+.cxx/
+
+# ============ Captures / Profiler ============
+captures/
+
+# ============ Temp files ============
+commit_msg.txt
+*.tmp

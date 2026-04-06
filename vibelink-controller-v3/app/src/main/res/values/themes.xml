@@ -1,0 +1,12 @@
+<resources>
+    <style name="Theme.ClodockControl" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#1F6F78</item>
+        <item name="colorPrimaryVariant">#174E55</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#2E8B57</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:windowBackground">#F5F7F8</item>
+        <item name="android:statusBarColor">#F5F7F8</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+    </style>
+</resources>

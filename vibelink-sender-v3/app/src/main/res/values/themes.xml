@@ -1,0 +1,14 @@
+<resources>
+    <style name="Theme.ClodockSender" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/clodock_primary</item>
+        <item name="colorPrimaryVariant">@color/clodock_primary_dark</item>
+        <item name="colorOnPrimary">@color/clodock_on_primary</item>
+        <item name="colorSecondary">@color/clodock_secondary</item>
+        <item name="colorOnSecondary">@color/clodock_on_primary</item>
+        <item name="android:windowBackground">@color/clodock_background</item>
+        <item name="android:statusBarColor">@color/clodock_background</item>
+        <item name="android:navigationBarColor">@color/clodock_surface</item>
+        <item name="android:textColorPrimary">@color/clodock_text_primary</item>
+        <item name="android:textColorSecondary">@color/clodock_text_secondary</item>
+    </style>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="clodock_background">#F5F7F8</color>
+    <color name="clodock_surface">#FFFFFF</color>
+    <color name="clodock_border">#D7E0E5</color>
+    <color name="clodock_primary">#1F6F78</color>
+    <color name="clodock_primary_dark">#174E55</color>
+    <color name="clodock_secondary">#2E8B57</color>
+    <color name="clodock_on_primary">#FFFFFF</color>
+    <color name="clodock_text_primary">#102A32</color>
+    <color name="clodock_text_secondary">#55727A</color>
+    <color name="clodock_success">#2E8B57</color>
+    <color name="clodock_danger">#B54747</color>
+</resources>
