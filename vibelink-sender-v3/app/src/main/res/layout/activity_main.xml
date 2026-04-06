@@ -13,79 +13,56 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="clodock sender v5"
+            android:text="clodock toss v5"
             android:textColor="@color/clodock_text_primary"
             android:textSize="26sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"
-            android:text="음성 명령을 선택한 컨트롤 기기로 전송합니다."
+            android:layout_marginTop="6dp"
+            android:text="갤럭시 S25 울트라에서 직접 음성을 듣고 토스 송금을 자동으로 진행합니다."
             android:textColor="@color/clodock_text_secondary"
             android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:background="@android:color/white">
+            android:padding="16dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tvAccessibilityStatus"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="자동 탐색"
-                android:textColor="@color/clodock_text_primary"
-                android:textSize="16sp"
+                android:text="접근성 서비스: 꺼짐"
+                android:textColor="@color/clodock_danger"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnScan"
+                android:id="@+id/btnOpenAccessibility"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="기기 찾기" />
-
-            <Spinner
-                android:id="@+id/spinnerTargets"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvSelectedTarget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="선택된 기기가 없습니다."
-                android:textColor="@color/clodock_text_secondary"
-                android:textSize="13sp" />
-
-            <EditText
-                android:id="@+id/etManualHost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="자동 탐색 실패 시 수동 IP 입력"
-                android:inputType="textUri"
-                android:maxLines="1" />
+                android:text="접근성 서비스 설정 열기" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@android:color/white"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:background="@android:color/white">
+            android:padding="16dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="명령 보내기"
+                android:text="음성 명령"
                 android:textColor="@color/clodock_text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -95,23 +72,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="음성 명령 시작" />
+                android:text="음성으로 송금 시작" />
 
             <EditText
                 android:id="@+id/etManualCommand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="직접 명령 입력"
+                android:hint="예: 토스로 유세린한테 만원 송금해"
                 android:inputType="textMultiLine"
                 android:minLines="2" />
 
             <Button
-                android:id="@+id/btnSendManual"
+                android:id="@+id/btnRunManual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="텍스트 명령 전송" />
+                android:text="텍스트로 송금 시작" />
 
             <TextView
                 android:id="@+id/tvRecognizedText"
@@ -123,10 +100,19 @@
                 android:textSize="13sp" />
 
             <TextView
+                android:id="@+id/tvParsedCommand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="해석 결과: 없음"
+                android:textColor="@color/clodock_text_primary"
+                android:textSize="14sp" />
+
+            <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:text="상태: 대기 중"
                 android:textColor="@color/clodock_text_primary"
                 android:textSize="14sp" />
@@ -136,7 +122,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="예시: 유튜브 열어줘 / 홈으로 가 / 뒤로 가 / 설정 열어줘 / 확인 눌러 / 아래로 스크롤해"
+            android:text="지원 예시: 토스로 유세린한테 만원 송금해 / 유세린에게 5천원 보내 / 토스에서 엄마한테 3만 5천원 송금해"
+            android:textColor="@color/clodock_text_secondary"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="1차 범위: 연락처 송금만 지원, 동명이인이나 다수 후보는 검색 결과 최상단을 선택, 최대 10만원까지만 허용"
             android:textColor="@color/clodock_text_secondary"
             android:textSize="13sp" />
 

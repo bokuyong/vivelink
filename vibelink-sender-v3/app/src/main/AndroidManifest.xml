@@ -28,6 +28,19 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.TossAccessibilityService"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/toss_accessibility_service" />
+        </service>
+
         <!-- Foreground service for MediaProjection screen capture -->
         <service
             android:name=".service.ScreenCaptureService"
