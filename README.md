@@ -1,116 +1,152 @@
-# VibeLink
+# clodock v5
 
-두 대의 안드로이드 기기 간 화면 미러링 + 자동 제어로 토스 앱에서 아내에게 1만원 자동 송금하는 프로젝트.
+캡스톤 디자인용으로 `vivelink`를 재활용해 `clodock v5` 방향으로 바꾼 작업본이다.
 
----
+현재 구조는 다음과 같다.
 
-## 구조
+- `vibelink-sender-v3`
+  - 이름만 남아 있지만 실제 역할은 `clodock Sender v5`
+  - 음성을 듣고 명령 문장을 컨트롤 기기로 전송한다
+  - 자동 기기 탐색을 지원한다
+- `vibelink-controller-v3`
+  - 이름만 남아 있지만 실제 역할은 `clodock Control v5`
+  - 명령을 받아 자연어를 해석하고, 로컬 Android 기기에서 앱 실행 및 기본 제어를 수행한다
+  - `PA03`, `Raspberry Pi 5`, `Radxa Cubie A7Z` 3개 변형으로 빌드된다
 
+## v3 상태 진단
+
+기존 `v3`는 아래 특징이 있었다.
+
+- 음성 인식은 했지만 실제로는 어떤 문장을 말해도 고정된 토스 송금 명령만 전송했다
+- 컨트롤 앱은 토스 자동화 전용이라 임의 앱 실행이나 범용 명령 해석 구조가 없었다
+- 연결은 `Sender IP`, `Device IP`, `ADB over Wi‑Fi`에 강하게 의존했다
+- 앱 이름과 UI, 리소스가 `VibeLink / ViveLink / v3` 상태로 남아 있었다
+- 프로젝트 루트가 Git 저장소가 아니어서 변경 이력을 바로 관리할 수 없었다
+
+## 이번에 바뀐 핵심
+
+### 1. sender 앱 단순화
+
+- 메인 UI를 한 화면으로 단순화했다
+- 음성 명령 시작 버튼, 수동 텍스트 명령 전송, 자동 기기 탐색, 수동 IP 백업 입력만 남겼다
+- 음성 결과를 그대로 컨트롤 앱으로 보내도록 바꿨다
+- 앱 내부 이미지 리소스를 제거했다
+
+### 2. controller 앱 범용화
+
+- 토스 전용 메인 화면을 제거했다
+- 명령 서버를 일반 명령 수신기로 바꿨다
+- 접근성 서비스 기반으로 다음 동작을 수행할 수 있게 했다
+  - 앱 실행
+  - 홈
+  - 뒤로
+  - 최근 앱
+  - 알림창
+  - 빠른 설정
+  - 텍스트 클릭
+  - 텍스트 입력
+  - 위/아래 스크롤
+
+### 3. 기기 변형 추가
+
+컨트롤 앱은 product flavor로 아래 3개 변형을 빌드한다.
+
+- `pa03`
+- `rpi5`
+- `cubiea7z`
+
+각 변형은 앱 이름과 프로필 문자열이 다르게 표시된다.
+
+### 4. 자동 탐색 추가
+
+- sender가 UDP 브로드캐스트로 컨트롤 기기를 찾는다
+- controller는 탐색 요청에 자신의 이름, 프로필, IP, 명령 포트를 응답한다
+- 자동 탐색 실패 시 sender에서 수동 IP 입력도 가능하다
+
+## 가능한 것과 불가능한 것
+
+### 현재 가능한 것
+
+- 음성 문장을 받아 앱 실행 명령으로 해석
+- 설치된 앱 이름을 찾아 실행
+- 접근성 서비스가 켜져 있으면 홈/뒤로/최근 앱/알림/빠른 설정 실행
+- 화면에 보이는 텍스트를 눌러 보기
+- 포커스된 입력창에 텍스트 넣기
+- 스크롤 제어
+
+### 아직 불가능하거나 제한이 큰 것
+
+- 모든 자연어를 100% 정확하게 이해하는 것
+- 어떤 앱의 어떤 화면이든 완전 자동으로 처리하는 것
+- OS 권한 없이 모든 민감 작업을 강제 실행하는 것
+- 기기 전원이 꺼진 상태에서 앱이 항상 명령을 받는 것
+- Miracast만으로 명령 전달, 앱 실행, 상태 확인까지 모두 대체하는 것
+
+## Miracast에 대한 판단
+
+요청하신 `IP 수동 입력 제거` 목적은 이해했지만, Miracast는 화면 전송 계열에 가깝고 명령 라우팅이나 앱 제어 채널을 대체하는 용도로는 맞지 않는다.
+
+그래서 이번 버전에서는 Miracast로 바꾸지 않고 아래처럼 설계를 바꿨다.
+
+- 같은 네트워크에서 자동 탐색
+- 찾은 기기에 자연어 명령 전송
+- 컨트롤 앱이 로컬 기기에서 직접 앱 실행과 접근성 제어 수행
+
+## 지원 명령 예시
+
+- `유튜브 열어줘`
+- `설정 열어줘`
+- `홈으로 가`
+- `뒤로 가`
+- `최근 앱 보여줘`
+- `알림창 열어줘`
+- `확인 눌러`
+- `clodock 입력해`
+- `아래로 스크롤해`
+
+## 빌드 방법
+
+Java와 Android SDK 경로를 지정해서 빌드했다.
+
+### sender
+
+```bash
+cd vibelink-sender-v3
+JAVA_HOME=/opt/homebrew/opt/openjdk@17 \
+ANDROID_HOME=$HOME/Library/Android/sdk \
+ANDROID_SDK_ROOT=$HOME/Library/Android/sdk \
+PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH" \
+./gradlew assembleDebug
 ```
-VibeLink/
-├── vibelink-sender/       # 기기 A - 화면 캡처 및 스트리밍
-└── vibelink-controller/   # 기기 B - 화면 수신, OCR 분석, 토스 자동화
+
+### controller
+
+```bash
+cd vibelink-controller-v3
+JAVA_HOME=/opt/homebrew/opt/openjdk@17 \
+ANDROID_HOME=$HOME/Library/Android/sdk \
+ANDROID_SDK_ROOT=$HOME/Library/Android/sdk \
+PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH" \
+./gradlew assemblePa03Debug assembleRpi5Debug assembleCubiea7zDebug
 ```
 
-## 파이프라인
+## 빌드 결과
 
-```
-[기기 A]                              [기기 B]
-  토스 실행                              화면 표시
-  MediaProjection 캡처  -WiFi->         Stream 수신
-  ADB 입력 수신      <-ADB-WiFi-        Vision API OCR
-                                        TossAutomation 실행
-```
+검증 완료:
 
----
+- `vibelink-sender-v3` `assembleDebug` 성공
+- `vibelink-controller-v3` `assemblePa03Debug` 성공
+- `vibelink-controller-v3` `assembleRpi5Debug` 성공
+- `vibelink-controller-v3` `assembleCubiea7zDebug` 성공
 
-## 설정 방법
+## 남은 다음 단계
 
-### 기기 A (vibelink-sender)
+캡스톤 용도로 더 밀어붙이려면 다음이 필요하다.
 
-1. Android Studio에서 `vibelink-sender` 프로젝트 열기
-2. 기기 A에 USB 디버깅 활성화
-3. USB로 PC 연결 후 ADB over WiFi 설정:
-   ```
-   adb tcpip 5555
-   ```
-4. 앱 빌드 후 기기 A에 설치
-5. 앱 실행 → 화면에 표시된 IP 주소 메모
+- 명령 파서 고도화
+- 앱 이름 별칭 사전 추가
+- 위험 작업 전 확인 절차 추가
+- 필요 시 기기별 좌표/화면 프로파일 보강
+- 접근성 기반의 더 정교한 탐색과 제스처 추가
+- 백그라운드 서비스화와 부팅 후 자동 시작
 
-### 기기 B (vibelink-controller)
-
-1. `vibelink-controller/app/src/main/java/com/vibelink/controller/MainActivity.java` 열기
-2. `VISION_API_KEY` 를 Google Cloud Console에서 발급한 Vision API 키로 교체:
-   ```java
-   private static final String VISION_API_KEY = "여기에_실제_API_키_입력";
-   ```
-3. 앱 빌드 후 기기 B에 설치
-4. 앱 실행
-
-### 기기 B 앱 사용 순서
-
-1. **Sender IP**: 기기 A에서 확인한 IP 입력 (예: `192.168.0.10`)
-2. **Device A IP**: 기기 A의 WiFi IP 입력 (ADB 용, 동일할 수 있음)
-3. **연결** 버튼 탭 → 기기 A 화면이 미러링으로 표시됨
-4. **토스 송금** 버튼 탭 → 자동화 시작
-
----
-
-## 토스 자동화 플로우
-
-```
-1. 토스 앱 실행
-2. "보내기" 버튼 탭 (OCR 탐지 → 실패 시 비율 좌표 폴백)
-3. 받는 사람 검색창 탭 → "아내" 입력
-4. 연락처 목록에서 "아내" 선택
-5. 금액 입력창 탭 → "10000" 입력
-6. "다음" 버튼 탭
-7. "보내기" 최종 확인 버튼 탭
-```
-
-### 좌표 조정
-
-기기 A의 해상도가 1080x2400이 아닌 경우, `TossAutomation.java` 생성자 호출부에서 수정:
-
-```java
-// MainActivity.java
-tossAutomation = new TossAutomation(adbController, screenAnalyzer,
-        실제_가로해상도, 실제_세로해상도);
-```
-
-### 수취인 이름 변경
-
-`TossAutomation.java` 상단 상수 수정:
-
-```java
-private static final String RECIPIENT_NAME = "아내"; // 토스에 저장된 실제 이름
-```
-
----
-
-## Google Cloud Vision API 키 발급
-
-1. [Google Cloud Console](https://console.cloud.google.com/) 접속
-2. 프로젝트 생성 또는 선택
-3. Cloud Vision API 활성화
-4. API 키 생성 (`API 및 서비스` → `사용자 인증 정보` → `API 키 만들기`)
-5. `MainActivity.java`의 `VISION_API_KEY` 상수에 입력
-
----
-
-## 주의사항
-
-- 기기 A와 B는 동일한 WiFi 네트워크(5GHz 권장)에 연결되어 있어야 함
-- USB 디버깅은 개발자 옵션에서 활성화 필요
-- `adb tcpip 5555`는 최초 1회 USB 연결 상태에서 실행해야 하며, 재부팅 시 재설정 필요
-- 토스 UI는 업데이트 시 변경될 수 있으므로, OCR 폴백 좌표를 주기적으로 재확인 권장
-- 본 프로젝트는 본인 계정의 본인 아내에 대한 정기 송금 자동화 목적의 개인 데모임
-
----
-
-## 개발 환경
-
-- Android API 26+ (Oreo)
-- JDK 17
-- Gradle 8.4
-- Android Gradle Plugin 8.2.0
