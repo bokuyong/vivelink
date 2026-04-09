@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.VibeLinkController"
+        android:theme="@style/Theme.ClodockController"
         android:usesCleartextTraffic="true">
 
         <activity

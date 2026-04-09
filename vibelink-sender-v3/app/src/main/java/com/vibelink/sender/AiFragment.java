@@ -37,15 +37,11 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// AI tab - voice trigger → send fixed Toss command to controller
+// AI tab - voice command → send raw text to controller for AI execution
 public class AiFragment extends Fragment {
 
     private static final String TAG = "AiFragment";
     private static final int COMMAND_PORT = 7789;
-
-    // Hardcoded transfer target
-    private static final String RECIPIENT = "아내";
-    private static final int AMOUNT = 1;
 
     private static final String PREFS_NAME = "ai_prefs";
     private static final String KEY_CONTROLLER_IP = "controller_ip";
@@ -197,8 +193,8 @@ public class AiFragment extends Fragment {
         btnMic.setBackground(bg);
     }
 
-    // Send fixed Toss command to controller - no parsing, any voice triggers this
-    private void sendTossCommand(String recognizedText) {
+    // Send raw voice command to controller AI agent
+    private void sendVoiceCommand(String recognizedText) {
         String ip = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                 .getString(KEY_CONTROLLER_IP, "").trim();
         if (ip.isEmpty()) {
@@ -206,13 +202,14 @@ public class AiFragment extends Fragment {
             return;
         }
 
-        showResult("✅ 인식: \"" + recognizedText + "\"\n📤 " + RECIPIENT + "에게 " + AMOUNT + "원 송금 명령 전송 중...");
+        showResult("✅ 인식: \"" + recognizedText + "\"\n📤 AI 에이전트에 명령 전송 중...");
         startTapOverlayService();
 
         executor.execute(() -> {
             try {
-                String json = "{\"recipient\":\"" + RECIPIENT + "\",\"amount\":" + AMOUNT + "}";
-                URL url = new URL("http://" + ip + ":" + COMMAND_PORT + "/toss");
+                String escaped = recognizedText.replace("\\", "\\\\").replace("\"", "\\\"");
+                String json = "{\"command\":\"" + escaped + "\"}";
+                URL url = new URL("http://" + ip + ":" + COMMAND_PORT + "/command");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(4000);
                 conn.setReadTimeout(4000);
@@ -229,8 +226,7 @@ public class AiFragment extends Fragment {
 
                 mainHandler.post(() -> {
                     if (code == 200) {
-                        showResult("✅ 명령 전송 완료!\n\"" + recognizedText + "\"");
-                        requireActivity().moveTaskToBack(true);
+                        showResult("✅ AI 에이전트 실행 중\n\"" + recognizedText + "\"");
                     } else {
                         showResult("⚠ 컨트롤러 오류 HTTP " + code);
                     }
@@ -323,8 +319,7 @@ public class AiFragment extends Fragment {
             String text = (matches != null && !matches.isEmpty()) ? matches.get(0) : "(음성 인식됨)";
             Log.d(TAG, "STT result: " + text);
 
-            // Any voice input triggers Toss command - no parsing
-            mainHandler.post(() -> sendTossCommand(text));
+            mainHandler.post(() -> sendVoiceCommand(text));
         }
 
         @Override

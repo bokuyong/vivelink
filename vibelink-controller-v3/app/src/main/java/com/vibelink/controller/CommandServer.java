@@ -19,6 +19,7 @@ public class CommandServer {
 
     public interface CommandListener {
         void onTossCommand(String recipient, int amount);
+        void onCommand(String rawText);
     }
 
     private ServerSocket serverSocket;
@@ -50,26 +51,36 @@ public class CommandServer {
 
     private void handleClient(Socket client) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream(), "UTF-8"));
+            java.io.InputStream rawIn = client.getInputStream();
 
-            // Read HTTP request headers until blank line
-            String line;
-            int contentLength = 0;
-            while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                if (line.toLowerCase().startsWith("content-length:")) {
-                    contentLength = Integer.parseInt(line.split(":")[1].trim());
-                }
+            // Read headers byte-by-byte until \r\n\r\n
+            java.io.ByteArrayOutputStream headerBuf = new java.io.ByteArrayOutputStream();
+            int nlCount = 0;
+            int b;
+            while ((b = rawIn.read()) != -1) {
+                headerBuf.write(b);
+                if (b == '\n') nlCount++;
+                else if (b != '\r') nlCount = 0;
+                if (nlCount >= 2) break;
             }
 
-            // Read JSON body
-            char[] body = new char[contentLength];
-            reader.read(body, 0, contentLength);
-            String json = new String(body);
-            Log.d(TAG, "Received: " + json);
+            String headerStr = headerBuf.toString("UTF-8");
+            int contentLength = 0;
+            for (String h : headerStr.split("\r\n")) {
+                if (h.toLowerCase().startsWith("content-length:"))
+                    contentLength = Integer.parseInt(h.split(":")[1].trim());
+            }
 
-            // Parse JSON manually (avoid Gson dependency here)
-            String recipient = extractJsonString(json, "recipient");
-            int amount = extractJsonInt(json, "amount");
+            // Read body as raw bytes, then decode as UTF-8
+            byte[] bodyBytes = new byte[contentLength];
+            int totalRead = 0;
+            while (totalRead < contentLength) {
+                int r = rawIn.read(bodyBytes, totalRead, contentLength - totalRead);
+                if (r == -1) break;
+                totalRead += r;
+            }
+            String json = new String(bodyBytes, 0, totalRead, "UTF-8");
+            Log.d(TAG, "Received: " + json);
 
             // Send HTTP 200 response
             OutputStream out = client.getOutputStream();
@@ -78,11 +89,20 @@ public class CommandServer {
             out.flush();
             client.close();
 
-            // Dispatch command on listener
-            if (listener != null && recipient != null && amount > 0) {
-                listener.onTossCommand(recipient, amount);
+            // Route to appropriate handler
+            String command = extractJsonString(json, "command");
+            if (command != null && !command.isEmpty()) {
+                // New generic command format
+                if (listener != null) listener.onCommand(command);
             } else {
-                Log.w(TAG, "Invalid command - recipient=" + recipient + " amount=" + amount);
+                // Legacy toss format
+                String recipient = extractJsonString(json, "recipient");
+                int amount = extractJsonInt(json, "amount");
+                if (listener != null && recipient != null && amount > 0) {
+                    listener.onTossCommand(recipient, amount);
+                } else {
+                    Log.w(TAG, "Invalid command: " + json);
+                }
             }
 
         } catch (Exception e) {

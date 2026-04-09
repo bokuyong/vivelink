@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="VibeLink Controller"
+        android:text="Clodock Control v5"
         android:textSize="22sp"
         android:textStyle="bold"
         android:layout_marginBottom="4dp" />
@@ -78,6 +78,54 @@
             android:text="토스 송금"
             android:enabled="false" />
 
+    </LinearLayout>
+
+    <!-- 화면 테스트 섹션 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="화면 캡처"
+            android:enabled="false"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnTapTest"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="탭 실행"
+            android:enabled="false" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <EditText
+            android:id="@+id/etFindText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="찾을 텍스트 (예: 설정)"
+            android:inputType="text"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnFind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="요소 찾기"
+            android:enabled="false" />
     </LinearLayout>
 
     <!-- Live screen mirror preview -->

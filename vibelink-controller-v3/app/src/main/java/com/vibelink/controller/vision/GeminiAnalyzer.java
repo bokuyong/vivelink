@@ -30,7 +30,7 @@ public class GeminiAnalyzer {
     private static final String TAG = "GeminiAnalyzer";
 
     private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
     private static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=utf-8");
 
@@ -234,6 +234,92 @@ public class GeminiAnalyzer {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, baos);
         return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+    }
+
+    /**
+     * AI Agent: given user command, screen image, and action history,
+     * decide the next single action to perform. Returns raw JSON string.
+     */
+    public String planNextAction(Bitmap screen, String userCommand, String history) {
+        int w = screen.getWidth();
+        int h = screen.getHeight();
+        String prompt =
+            "당신은 안드로이드 폰을 제어하는 AI 에이전트입니다.\n" +
+            "화면 해상도: " + w + "x" + h + "픽셀\n\n" +
+            "사용자 명령: \"" + userCommand + "\"\n" +
+            "지금까지 수행한 작업:\n" + history + "\n\n" +
+            "현재 화면 스크린샷을 보고, 다음에 수행할 하나의 액션을 JSON으로만 응답하세요.\n\n" +
+            "가능한 액션:\n" +
+            "- {\"action\":\"tap\",\"x\":500,\"y\":1200} - 해당 좌표 탭\n" +
+            "- {\"action\":\"tap_text\",\"text\":\"검색\"} - 화면에서 해당 텍스트를 찾아 탭\n" +
+            "- {\"action\":\"type\",\"text\":\"입력할 내용\"} - 포커스된 입력창에 텍스트 입력\n" +
+            "- {\"action\":\"swipe\",\"direction\":\"up\"} - 스크롤 (up/down/left/right)\n" +
+            "- {\"action\":\"back\"} - 뒤로가기\n" +
+            "- {\"action\":\"home\"} - 홈 화면으로\n" +
+            "- {\"action\":\"open_app\",\"app\":\"앱이름\"} - 앱 실행\n" +
+            "- {\"action\":\"wait\",\"seconds\":2} - 대기\n" +
+            "- {\"action\":\"done\",\"summary\":\"완료 설명\"} - 작업 완료\n\n" +
+            "주의사항:\n" +
+            "- 반드시 JSON 한 줄만 응답하세요. 설명 없이 JSON만.\n" +
+            "- 한 번에 하나의 액션만 응답하세요.\n" +
+            "- 화면을 정확히 보고 현재 상태에 맞는 액션을 선택하세요.\n" +
+            "- 앱을 여는 명령이면 open_app을 사용하세요.\n" +
+            "- 입력 필드가 이미 포커스되어 있으면 type을 사용하세요.\n" +
+            "- 목표를 달성했으면 반드시 done을 응답하세요.";
+
+        try {
+            String base64 = bitmapToBase64(screen);
+
+            // Build request with higher token limit for agent response
+            JsonObject imageData = new JsonObject();
+            imageData.addProperty("mime_type", "image/jpeg");
+            imageData.addProperty("data", base64);
+
+            JsonObject inlineData = new JsonObject();
+            inlineData.add("inline_data", imageData);
+
+            JsonObject textPart = new JsonObject();
+            textPart.addProperty("text", prompt);
+
+            JsonArray parts = new JsonArray();
+            parts.add(inlineData);
+            parts.add(textPart);
+
+            JsonObject content = new JsonObject();
+            content.add("parts", parts);
+
+            JsonArray contents = new JsonArray();
+            contents.add(content);
+
+            JsonObject root = new JsonObject();
+            root.add("contents", contents);
+
+            JsonObject genConfig = new JsonObject();
+            genConfig.addProperty("maxOutputTokens", 256);
+            genConfig.addProperty("temperature", 0.0);
+            root.add("generationConfig", genConfig);
+
+            String body = gson.toJson(root);
+
+            Request req = new Request.Builder()
+                    .url(GEMINI_URL + apiKey)
+                    .post(RequestBody.create(body, JSON_TYPE))
+                    .build();
+
+            try (Response resp = http.newCall(req).execute()) {
+                if (!resp.isSuccessful() || resp.body() == null) {
+                    String errBody = resp.body() != null ? resp.body().string() : "no body";
+                    Log.e(TAG, "planNextAction API error: " + resp.code() + " | " + errBody.substring(0, Math.min(300, errBody.length())));
+                    return null;
+                }
+                String result = parseGeminiText(resp.body().string());
+                Log.d(TAG, "planNextAction result: " + result);
+                return result;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "planNextAction failed: " + e.getMessage());
+            return null;
+        }
     }
 
     public void shutdown() {

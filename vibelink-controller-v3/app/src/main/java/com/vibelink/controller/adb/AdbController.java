@@ -26,7 +26,7 @@ public class AdbController {
     private static final String TAG = "AdbController";
     private static final int ADB_PORT = 5555;
 
-    private static final String REMOTE_SCREEN_PATH = "/sdcard/vibelink_cap.png";
+    private static final String REMOTE_SCREEN_PATH = "/sdcard/clodock_cap.png";
 
     private final String deviceIp;
     private final Context context;
@@ -171,7 +171,7 @@ public class AdbController {
                 dadb.shell("ime enable " + AppConfig.ADB_IME_ID);
                 dadb.shell("ime set " + AppConfig.ADB_IME_ID);
                 Thread.sleep(600);
-                Log.i(TAG, "Switched IME -> VibeLink Keyboard (was: " + original + ")");
+                Log.i(TAG, "Switched IME -> Clodock Keyboard (was: " + original + ")");
                 return original;
             } catch (Exception e) {
                 Log.e(TAG, "switchToAdbKeyboard failed: " + e.getMessage());
@@ -234,7 +234,7 @@ public class AdbController {
         return executor.submit(() -> {
             if (dadb == null) return null;
             try {
-                String remotePath = "/sdcard/vibelink_ui.xml";
+                String remotePath = "/sdcard/clodock_ui.xml";
                 File localFile = new File(context.getCacheDir(), "ui_dump.xml");
 
                 dadb.shell("uiautomator dump " + remotePath);
@@ -283,7 +283,7 @@ public class AdbController {
         return executor.submit(() -> {
             if (dadb == null) return null;
             try {
-                String remotePath = "/sdcard/vibelink_ui.xml";
+                String remotePath = "/sdcard/clodock_ui.xml";
                 File localFile = new File(context.getCacheDir(), "ui_dump.xml");
 
                 dadb.shell("uiautomator dump " + remotePath);
@@ -332,7 +332,7 @@ public class AdbController {
         return executor.submit(() -> {
             if (dadb == null) return null;
             try {
-                String remotePath = "/sdcard/vibelink_ui.xml";
+                String remotePath = "/sdcard/clodock_ui.xml";
                 File localFile = new File(context.getCacheDir(), "ui_dump.xml");
 
                 dadb.shell("uiautomator dump " + remotePath);

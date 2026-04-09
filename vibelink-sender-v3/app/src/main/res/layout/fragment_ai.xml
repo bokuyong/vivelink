@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ViveLink"
+        android:text="Clodock"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -41,7 +41,7 @@
             android:src="@drawable/ic_ai_chain"
             android:scaleType="fitCenter"
             android:layout_marginBottom="20dp"
-            android:contentDescription="VibeLink" />
+            android:contentDescription="Clodock" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ViveLink로 무엇을 하고 싶으신가요?"
+            android:text="Clodock으로 무엇을 하고 싶으신가요?"
             android:textColor="#8899BB"
             android:textSize="14sp"
             android:gravity="center"

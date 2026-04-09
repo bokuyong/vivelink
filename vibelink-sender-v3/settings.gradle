@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VibeLinkSender"
+rootProject.name = "ClodockSender"
 include ':app'

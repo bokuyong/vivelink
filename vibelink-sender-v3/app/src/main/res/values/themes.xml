@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.VibeLinkSender" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ClodockSender" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_blue</item>
         <item name="colorPrimaryVariant">@color/bg_dark_start</item>
         <item name="colorOnPrimary">@color/text_primary</item>

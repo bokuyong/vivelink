@@ -29,6 +29,8 @@ public class DeviceFragment extends Fragment {
 
     private TextView tvStatus;
     private TextView tvIpAddress;
+    private TextView tvSenderIp;
+    private TextView tvDeviceIp;
     private Button btnStart;
     private Button btnStop;
     private View dotMirror;
@@ -63,7 +65,13 @@ public class DeviceFragment extends Fragment {
         btnStop = view.findViewById(R.id.btnStop);
         dotMirror = view.findViewById(R.id.dotMirror);
 
-        tvIpAddress.setText("IP: " + getLocalIpAddress() + ":" + StreamServer.DEFAULT_PORT);
+        tvSenderIp = view.findViewById(R.id.tvSenderIp);
+        tvDeviceIp = view.findViewById(R.id.tvDeviceIp);
+
+        String localIp = getLocalIpAddress();
+        tvIpAddress.setText("IP: " + localIp + ":" + StreamServer.DEFAULT_PORT);
+        tvSenderIp.setText(localIp);
+        tvDeviceIp.setText(localIp);
 
         btnStart.setOnClickListener(v -> requestProjection());
         btnStop.setOnClickListener(v -> stopCapture());

@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ViveLink Hub 상태"
+            android:text="Clodock Hub 상태"
             android:textColor="#8899BB"
             android:textSize="14sp"
             android:layout_marginBottom="24dp" />
@@ -76,7 +76,7 @@
                     android:id="@+id/tvHubStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ViveLink Hub 연결됨"
+                    android:text="Clodock Hub 연결됨"
                     android:textColor="#48BB78"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -191,7 +191,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp" />
 
-            <!-- ViveLink Hub row -->
+            <!-- Clodock Hub row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ViveLink Hub"
+                        android:text="Clodock Hub"
                         android:textColor="#FFFFFF"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -226,6 +226,81 @@
                     android:layout_height="10dp"
                     android:background="@drawable/ic_dot_green" />
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Controller 연결 정보 카드 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Controller에 입력할 정보"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sender IP"
+                    android:textColor="#8899BB"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvSenderIp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:textColor="#CCDDFF"
+                    android:textSize="13sp"
+                    android:fontFamily="monospace" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Device IP (ADB)"
+                    android:textColor="#8899BB"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvDeviceIp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:textColor="#CCDDFF"
+                    android:textSize="13sp"
+                    android:fontFamily="monospace" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="※ Device IP는 이 폰(Sender)의 Wi-Fi IP입니다"
+                android:textColor="#556688"
+                android:textSize="11sp"
+                android:layout_marginTop="4dp" />
         </LinearLayout>
 
         <!-- Control buttons -->
